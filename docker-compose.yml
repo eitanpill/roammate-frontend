@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: roammate-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NEXTAUTH_SECRET=your-super-secret-key-change-this-in-production
+      - NEXTAUTH_URL=http://localhost:3000
+    restart: unless-stopped
+    networks:
+      - roammate
+
+  backend:
+    image: roammate-backend:latest
+    container_name: roammate-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://user:password@db:5432/roammate
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - roammate
+
+  db:
+    image: postgres:15-alpine
+    container_name: roammate-db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=roammate
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - roammate
+
+volumes:
+  postgres_data:
+
+networks:
+  roammate:
+    driver: bridge
