@@ -45,7 +45,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
                   {review.user?.name || 'Anonymous'}
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
+                  {formatDistanceToNow(review.createdAt)}
                 </p>
               </div>
             </div>

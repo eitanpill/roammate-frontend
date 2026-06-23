@@ -120,7 +120,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
       </button>
 
       <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-        You won't be charged yet
+        You will not be charged yet
       </p>
     </form>
   );
