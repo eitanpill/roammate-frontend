@@ -1,32 +1,14 @@
-'use client';
-
-export const dynamic = 'force-dynamic';
-
-import React, { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
-import { AdminListingsQueue } from '@/components/admin/AdminListingsQueue';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import toast from 'react-hot-toast';
-import { AMENITIES } from '@/lib/constants';
+import AdminPageContent from '@/components/admin/AdminPageContent';
 
-export default function AdminPage() {
-  const { data: session, status } = useSession();
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
+export default async function AdminPage() {
+  const session = await getServerSession();
 
   if (!session || session.user.role !== 'admin') {
     redirect('/auth/login');
   }
 
-  // Mock data - replace with actual API calls
   const pendingListings = [
     {
       id: '1',
@@ -78,112 +60,4 @@ export default function AdminPage() {
     },
   ];
 
-  const handleApprove = async (id: string) => {
-    setIsProcessing(true);
-    try {
-      // Call API to approve listing
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success('Listing approved!');
-    } catch (error) {
-      toast.error('Failed to approve listing');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleReject = async (id: string) => {
-    setIsProcessing(true);
-    try {
-      // Call API to reject listing
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success('Listing rejected');
-    } catch (error) {
-      toast.error('Failed to reject listing');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    setIsProcessing(true);
-    try {
-      // Call API to delete listing
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success('Listing deleted');
-    } catch (error) {
-      toast.error('Failed to delete listing');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-            Admin Panel
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Review and manage pending listings
-          </p>
-        </div>
-
-        {/* Stats Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="card bg-white dark:bg-gray-800">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Pending Listings</p>
-            <p className="text-3xl font-bold text-brand-primary">{pendingListings.length}</p>
-          </div>
-          <div className="card bg-white dark:bg-gray-800">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Total Users</p>
-            <p className="text-3xl font-bold text-brand-secondary">127</p>
-          </div>
-          <div className="card bg-white dark:bg-gray-800">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Total Listings</p>
-            <p className="text-3xl font-bold text-success">342</p>
-          </div>
-          <div className="card bg-white dark:bg-gray-800">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Active Bookings</p>
-            <p className="text-3xl font-bold text-info">89</p>
-          </div>
-        </div>
-
-        {/* Listings Queue */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Listings Pending Approval
-          </h2>
-          <AdminListingsQueue
-            listings={pendingListings}
-            onApprove={handleApprove}
-            onReject={handleReject}
-            onDelete={handleDelete}
-            isLoading={isProcessing}
-          />
-        </div>
-
-        {/* Admin Actions */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <button className="card bg-white dark:bg-gray-800 text-center hover:shadow-lg transition">
-            <div className="text-3xl mb-2">👥</div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">Manage Users</h3>
-          </button>
-          <button className="card bg-white dark:bg-gray-800 text-center hover:shadow-lg transition">
-            <div className="text-3xl mb-2">📊</div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">Analytics</h3>
-          </button>
-          <button className="card bg-white dark:bg-gray-800 text-center hover:shadow-lg transition">
-            <div className="text-3xl mb-2">⚙️</div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">Settings</h3>
-          </button>
-          <button className="card bg-white dark:bg-gray-800 text-center hover:shadow-lg transition">
-            <div className="text-3xl mb-2">📝</div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">Reports</h3>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+  return <AdminPageContent listings={pendingListings} />;
