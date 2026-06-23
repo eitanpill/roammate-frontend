@@ -5,9 +5,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Property } from '@/types';
 import { Calendar, Users, CreditCard } from 'lucide-react';
-import { differenceInDays } from 'date-fns';
 import { FormDateInput, FormInput } from '@/components/ui/form';
 import { bookingSchema, type BookingFormData } from '@/lib/schemas';
+
+const differenceInDays = (start: Date, end: Date) =>
+  Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
 interface BookingFormProps {
   property: Property;
