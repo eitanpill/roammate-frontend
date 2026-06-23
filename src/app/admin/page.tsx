@@ -1,7 +1,5 @@
 'use client';
 
-export const revalidate = 0;
-
 import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
