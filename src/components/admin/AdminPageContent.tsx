@@ -3,32 +3,10 @@
 import React, { useState } from 'react';
 import { AdminListingsQueue } from '@/components/admin/AdminListingsQueue';
 import toast from 'react-hot-toast';
-
-interface Listing {
-  id: string;
-  title: string;
-  description: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  pricePerNight: number;
-  maxGuests: number;
-  bedrooms: number;
-  bathrooms: number;
-  amenities: string[];
-  images: string[];
-  reviews: unknown[];
-  rating: number;
-  reviewCount: number;
-  hostId: string;
-  available: boolean;
-  availableDates: unknown[];
-  createdAt: string;
-  updatedAt: string;
-}
+import { Property } from '@/types';
 
 interface AdminPageContentProps {
-  listings: Listing[];
+  listings: Property[];
 }
 
 export default function AdminPageContent({ listings }: AdminPageContentProps) {
