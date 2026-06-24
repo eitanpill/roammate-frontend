@@ -1,9 +1,11 @@
 import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
 import AdminPageContent from '@/components/admin/AdminPageContent';
+import { AMENITIES } from '@/lib/constants';
+import { authOptions } from '@/lib/auth';
 
 export default async function AdminPage() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== 'admin') {
     redirect('/auth/login');
@@ -61,3 +63,4 @@ export default async function AdminPage() {
   ];
 
   return <AdminPageContent listings={pendingListings} />;
+}
