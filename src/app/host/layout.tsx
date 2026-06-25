@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { signOut } from 'next-auth/react'
 import { Home, Plus, Calendar, DollarSign, MessageSquare, LogOut, Menu, X } from 'lucide-react'
 
 export default function HostLayout({
@@ -50,7 +51,10 @@ export default function HostLayout({
                 <span className="font-medium">{item.label}</span>
               </Link>
             ))}
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-brand-earth hover:bg-red-50 border border-transparent hover:border-red-300 transition mt-6">
+            <button
+              onClick={() => signOut({ redirect: true, callbackUrl: '/auth/login' })}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-brand-earth hover:bg-red-50 border border-transparent hover:border-red-300 transition mt-6"
+            >
               <LogOut className="w-5 h-5" />
               <span className="font-medium">Sign Out</span>
             </button>

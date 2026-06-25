@@ -108,7 +108,7 @@ export default function PropertyPage({ params }: { params: { id: string } }) {
               </div>
 
               {/* Property Info Grid */}
-              <div className="grid grid-cols-4 gap-4 py-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="text-center">
                   <Users size={24} className="text-brand-primary mx-auto mb-2" />
                   <p className="text-sm text-gray-600 dark:text-gray-400">Guests</p>

@@ -80,7 +80,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
         <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">
           Images ({listing.images?.length || 0})
         </p>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {listing.images?.slice(0, 4).map((img, idx) => (
             <div
               key={idx}

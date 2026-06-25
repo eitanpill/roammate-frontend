@@ -25,15 +25,15 @@ export default function HomePage() {
       {/* Navigation */}
       <nav className="relative z-50 sticky top-0 backdrop-blur-md bg-white/30 border-b border-brand-primary/20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="text-3xl font-black text-brand-primary flex items-center gap-2">
+          <div className="text-2xl sm:text-3xl font-black text-brand-primary flex items-center gap-2">
             🏕️ RoamMate
-            <span className="text-sm font-semibold text-brand-accent ml-2">Connect with Nature</span>
+            <span className="hidden md:inline text-sm font-semibold text-brand-accent ml-2">Connect with Nature</span>
           </div>
-          <div className="flex gap-4">
-            <Link href="/search" className="px-6 py-2 rounded-lg text-brand-primary hover:text-brand-accent transition">
+          <div className="flex gap-2 sm:gap-4">
+            <Link href="/search" className="px-3 sm:px-6 py-2 rounded-lg text-brand-primary hover:text-brand-accent transition">
               Find Spots
             </Link>
-            <Link href="/auth/login" className="px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-accent text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-brand-primary/30 transition transform hover:scale-105">
+            <Link href="/auth/login" className="px-3 sm:px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-accent text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-brand-primary/30 transition transform hover:scale-105">
               Sign In
             </Link>
           </div>
@@ -45,7 +45,7 @@ export default function HomePage() {
         <div className="max-w-6xl w-full">
           <div className="text-center space-y-8 mb-16">
             <div className="relative inline-block">
-              <h1 className="relative text-7xl md:text-8xl font-black text-brand-primary leading-tight drop-shadow-lg">
+              <h1 className="relative text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-brand-primary leading-tight drop-shadow-lg">
                 Park Your Caravan<br />
                 <span className="text-brand-secondary">
                   in Nature's Embrace
@@ -223,8 +223,8 @@ export default function HomePage() {
       <section className="relative z-10 max-w-7xl mx-auto px-4 py-24">
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-3xl blur-xl"></div>
-          <div className="relative backdrop-blur-sm bg-white/80 border border-brand-primary/30 rounded-3xl p-16 text-center space-y-8">
-            <h2 className="text-5xl font-black text-brand-primary">
+          <div className="relative backdrop-blur-sm bg-white/80 border border-brand-primary/30 rounded-3xl p-8 sm:p-16 text-center space-y-8">
+            <h2 className="text-3xl sm:text-5xl font-black text-brand-primary">
               Ready to Hit the Open Road?
             </h2>
             <p className="text-xl text-brand-earth max-w-2xl mx-auto">
