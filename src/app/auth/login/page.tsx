@@ -150,9 +150,12 @@ export default function LoginPage() {
 
           {/* Demo Credentials */}
           <div className="bg-info/10 border border-info/30 rounded-lg p-4 text-sm text-gray-700 dark:text-gray-300">
-            <p className="font-semibold mb-1">Demo Credentials:</p>
-            <p>Email: <code className="bg-gray-200 dark:bg-gray-700 px-1">demo@roammate.com</code></p>
-            <p>Password: <code className="bg-gray-200 dark:bg-gray-700 px-1">password123</code></p>
+            <p className="font-semibold mb-2">Demo accounts (password for all: <code className="bg-gray-200 dark:bg-gray-700 px-1">demo1234</code>)</p>
+            <ul className="space-y-1">
+              <li>👤 Guest: <code className="bg-gray-200 dark:bg-gray-700 px-1">guest@roammate.com</code></li>
+              <li>🏕️ Host: <code className="bg-gray-200 dark:bg-gray-700 px-1">host@roammate.com</code></li>
+              <li>🛠️ Admin: <code className="bg-gray-200 dark:bg-gray-700 px-1">admin@roammate.com</code></li>
+            </ul>
           </div>
         </div>
       </div>

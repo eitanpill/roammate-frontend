@@ -23,6 +23,10 @@ export default withAuth(
     return NextResponse.next()
   },
   {
+    // Must match the secret used to sign the JWT in src/lib/auth.ts.
+    secret:
+      process.env.NEXTAUTH_SECRET ||
+      'roammate-demo-secret-change-me-in-production',
     callbacks: {
       // Returning false (no token) sends the user to the signIn page below.
       authorized: ({ token }) => !!token,
