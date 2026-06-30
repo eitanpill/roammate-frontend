@@ -1,10 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, MapPin, Filter, X, Star, Zap, Droplet, Trees, Leaf, Wifi } from 'lucide-react'
+import { supabase, type DbProperty } from '@/lib/supabase'
 
 export default function SearchPage() {
   const [showFilters, setShowFilters] = useState(false)
+  const [properties, setProperties] = useState<DbProperty[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    supabase
+      .from('properties')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        setProperties(data ?? [])
+        setLoading(false)
+      })
+  }, [])
 
   const amenities = [
     { name: 'Water Hookup', icon: Droplet },
@@ -131,83 +145,88 @@ export default function SearchPage() {
               </div>
             </div>
 
-            {/* Empty State */}
-            <div className="backdrop-blur-sm bg-white/70 border border-brand-primary/20 rounded-2xl p-16 text-center space-y-6">
-              <div className="flex justify-center">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-primary/30 to-brand-secondary/30 flex items-center justify-center">
-                  <span className="text-5xl">🌲</span>
-                </div>
+            {/* Loading */}
+            {loading && (
+              <div className="text-center py-16 text-brand-earth font-medium">
+                Loading spots…
               </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-brand-primary">No Spots Available</h3>
-                <p className="text-brand-earth max-w-md mx-auto">
-                  Try adjusting your dates, location, or filters to find more available caravan spots.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-6 py-3 bg-gradient-to-r from-brand-primary to-brand-sage text-white rounded-lg font-semibold hover:shadow-lg transition transform hover:scale-105">
-                  Clear Filters
-                </button>
-                <button className="px-6 py-3 backdrop-blur-sm bg-white/60 border border-brand-primary/30 text-brand-primary rounded-lg font-semibold hover:bg-white/80 transition transform hover:scale-105">
-                  Browse All
-                </button>
-              </div>
-            </div>
+            )}
 
-            {/* Property Grid - Sample */}
-            <div className="mt-12 grid md:grid-cols-2 gap-6">
-              {[
-                { title: "Beachside Paradise Farm", location: "Bangalow, NSW", type: "Beachside Farm", price: 50, rating: 4.9, amenities: ['Water', 'Power', 'Level'] },
-                { title: "Mountain Retreat Land", location: "Blue Mountains, NSW", type: "Bushland", price: 45, rating: 4.8, amenities: ['Water', 'Level', 'Pet Friendly'] },
-                { title: "Riverside Camping Ground", location: "Snowy River, VIC", type: "Riverside", price: 40, rating: 5.0, amenities: ['Power', 'Dump', 'WiFi'] },
-                { title: "Organic Farm Stay", location: "Hunter Valley, NSW", type: "Farm Stay", price: 55, rating: 4.7, amenities: ['Water', 'Power', 'Pet Friendly'] }
-              ].map((property, i) => (
-                <div key={i} className="group cursor-pointer">
-                  <div className="relative mb-4 overflow-hidden rounded-xl bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/20 h-48 flex items-center justify-center group-hover:border-brand-primary/50 transition">
-                    <span className="text-5xl">🏞️</span>
-                  </div>
-                  
-                  <div className="backdrop-blur-sm bg-white/70 border border-brand-primary/20 rounded-xl p-4 space-y-3 group-hover:border-brand-primary/50 transition">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <h3 className="font-bold text-brand-primary group-hover:text-brand-accent transition">{property.title}</h3>
-                        <p className="text-sm text-brand-earth flex items-center gap-1">
-                          <MapPin className="w-4 h-4" /> {property.location}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1 bg-brand-accent/20 border border-brand-accent/50 rounded-lg px-2 py-1">
-                        <Star className="w-4 h-4 text-brand-accent fill-brand-accent" />
-                        <span className="text-sm font-semibold text-brand-primary">{property.rating}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="text-xs text-brand-earth bg-brand-primary/10 border border-brand-primary/20 rounded-lg px-2 py-1 inline-block">
-                      {property.type}
-                    </div>
-                    
-                    <div className="flex gap-2 flex-wrap">
-                      {property.amenities.map(am => (
-                        <div key={am} className="text-xs text-brand-primary bg-brand-secondary/10 border border-brand-secondary/20 rounded-lg px-2 py-1">
-                          {am === 'Water' && <Droplet className="w-3 h-3 inline mr-1" />}
-                          {am === 'Power' && <Zap className="w-3 h-3 inline mr-1" />}
-                          {am}
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="flex items-center justify-between pt-2 border-t border-brand-primary/10">
-                      <div>
-                        <p className="text-xs text-brand-earth">from</p>
-                        <p className="text-lg font-bold text-brand-primary">A${property.price}<span className="text-xs font-normal text-brand-earth">/night</span></p>
-                      </div>
-                      <button className="px-4 py-2 bg-gradient-to-r from-brand-primary to-brand-sage text-white rounded-lg font-semibold hover:shadow-lg transition transform hover:scale-105">
-                        View
-                      </button>
-                    </div>
+            {/* Empty State */}
+            {!loading && properties.length === 0 && (
+              <div className="backdrop-blur-sm bg-white/70 border border-brand-primary/20 rounded-2xl p-16 text-center space-y-6">
+                <div className="flex justify-center">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-primary/30 to-brand-secondary/30 flex items-center justify-center">
+                    <span className="text-5xl">🌲</span>
                   </div>
                 </div>
-              ))}
-            </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-black text-brand-primary">No Spots Yet</h3>
+                  <p className="text-brand-earth max-w-md mx-auto">
+                    Be the first to list a spot! Sign in as a host and add your place.
+                  </p>
+                </div>
+                <a href="/host/new-listing" className="inline-block px-6 py-3 bg-gradient-to-r from-brand-primary to-brand-sage text-white rounded-lg font-semibold hover:shadow-lg transition transform hover:scale-105">
+                  List Your Spot
+                </a>
+              </div>
+            )}
+
+            {/* Property Grid - real data */}
+            {!loading && properties.length > 0 && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {properties.map((property) => (
+                  <div key={property.id} className="group">
+                    <div className="relative mb-4 overflow-hidden rounded-xl bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/20 h-48 flex items-center justify-center group-hover:border-brand-primary/50 transition">
+                      <span className="text-5xl">{property.image_emoji || '🏞️'}</span>
+                    </div>
+
+                    <div className="backdrop-blur-sm bg-white/70 border border-brand-primary/20 rounded-xl p-4 space-y-3 group-hover:border-brand-primary/50 transition">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                          <h3 className="font-bold text-brand-primary group-hover:text-brand-accent transition">{property.name}</h3>
+                          {property.address && (
+                            <p className="text-sm text-brand-earth flex items-center gap-1">
+                              <MapPin className="w-4 h-4" /> {property.address}
+                            </p>
+                          )}
+                        </div>
+                        {property.rating > 0 && (
+                          <div className="flex items-center gap-1 bg-brand-accent/20 border border-brand-accent/50 rounded-lg px-2 py-1">
+                            <Star className="w-4 h-4 text-brand-accent fill-brand-accent" />
+                            <span className="text-sm font-semibold text-brand-primary">{property.rating}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {property.type && (
+                        <div className="text-xs text-brand-earth bg-brand-primary/10 border border-brand-primary/20 rounded-lg px-2 py-1 inline-block">
+                          {property.type}
+                        </div>
+                      )}
+
+                      {property.amenities?.length > 0 && (
+                        <div className="flex gap-2 flex-wrap">
+                          {property.amenities.map((am) => (
+                            <div key={am} className="text-xs text-brand-primary bg-brand-secondary/10 border border-brand-secondary/20 rounded-lg px-2 py-1">
+                              {am}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between pt-2 border-t border-brand-primary/10">
+                        <div>
+                          <p className="text-xs text-brand-earth">from</p>
+                          <p className="text-lg font-bold text-brand-primary">A${property.price_per_night}<span className="text-xs font-normal text-brand-earth">/night</span></p>
+                        </div>
+                        <span className="text-xs text-brand-earth">Hosted by {property.host_name || 'Host'}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

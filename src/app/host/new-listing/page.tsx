@@ -1,10 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowRight, Check } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { Check } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { supabase } from '@/lib/supabase'
 
 export default function NewListingWizard() {
+  const router = useRouter()
+  const { data: session } = useSession()
   const [step, setStep] = useState(1)
+  const [publishing, setPublishing] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -14,6 +21,36 @@ export default function NewListingWizard() {
     pricePerNight: '',
     amenities: [] as string[]
   })
+
+  const handlePublish = async () => {
+    if (!formData.name.trim()) {
+      toast.error('Please give your property a name (step 1)')
+      setStep(1)
+      return
+    }
+
+    setPublishing(true)
+    const { error } = await supabase.from('properties').insert({
+      host_id: session?.user?.id ?? null,
+      host_name: session?.user?.name ?? 'Host',
+      name: formData.name.trim(),
+      description: formData.description.trim() || null,
+      type: formData.type,
+      address: formData.address.trim() || null,
+      max_guests: parseInt(formData.maxGuests, 10) || 2,
+      price_per_night: parseFloat(formData.pricePerNight) || 0,
+      amenities: formData.amenities,
+    })
+    setPublishing(false)
+
+    if (error) {
+      toast.error('Could not publish: ' + error.message)
+      return
+    }
+
+    toast.success('Listing published! 🎉')
+    router.push('/search')
+  }
 
   const amenitiesOptions = ['Water Hookup', 'Power Supply', 'Dump Station', 'WiFi', 'Level Ground', 'Pet Friendly', 'Firepit', 'Shelter']
 
@@ -71,6 +108,16 @@ export default function NewListingWizard() {
               <option value="farm">Farm Stay</option>
               <option value="bushland">Bushland</option>
             </select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-brand-primary mb-1">Price per night (A$)</label>
+                <input type="number" min="0" placeholder="50" value={formData.pricePerNight} onChange={(e) => setFormData({...formData, pricePerNight: e.target.value})} className="w-full bg-white border border-brand-primary/20 rounded-lg px-4 py-3 text-brand-primary" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-brand-primary mb-1">Max guests</label>
+                <input type="number" min="1" placeholder="2" value={formData.maxGuests} onChange={(e) => setFormData({...formData, maxGuests: e.target.value})} className="w-full bg-white border border-brand-primary/20 rounded-lg px-4 py-3 text-brand-primary" />
+              </div>
+            </div>
           </div>
         )}
 
@@ -108,8 +155,20 @@ export default function NewListingWizard() {
         {step === 5 && (
           <div className="space-y-6">
             <h2 className="text-2xl font-black text-brand-primary">✅ Review</h2>
-            <button className="w-full py-3 bg-gradient-to-r from-brand-primary to-brand-sage text-white rounded-lg font-bold">
-              ✅ Publish My Listing
+            <div className="space-y-2 text-brand-primary">
+              <p><span className="font-bold">Name:</span> {formData.name || '—'}</p>
+              <p><span className="font-bold">Type:</span> {formData.type}</p>
+              <p><span className="font-bold">Address:</span> {formData.address || '—'}</p>
+              <p><span className="font-bold">Max guests:</span> {formData.maxGuests}</p>
+              <p><span className="font-bold">Price/night:</span> A${formData.pricePerNight || '0'}</p>
+              <p><span className="font-bold">Amenities:</span> {formData.amenities.join(', ') || '—'}</p>
+            </div>
+            <button
+              onClick={handlePublish}
+              disabled={publishing}
+              className="w-full py-3 bg-gradient-to-r from-brand-primary to-brand-sage text-white rounded-lg font-bold disabled:opacity-50"
+            >
+              {publishing ? 'Publishing…' : '✅ Publish My Listing'}
             </button>
           </div>
         )}
